@@ -3,20 +3,44 @@
 ### Standard constructions
 ###############################################################################
 ###############################################################################
-@doc Markdown.doc"""
-    pyramid(P::Polyhedron, z::Number=1; no_coordinates::Bool, no_labels::Bool, group::Bool)
 
-Will be added.
+@doc Markdown.doc"""
+    pyramid(P::Polyhedron; z::Number=1, no_coordinates::Bool, no_labels::Bool, group::Bool)
+
+Make a pyramid over the given polyhedron `P`. The pyramid is the convex hull of
+the input polyhedron `P` and a point `v` outside the affine span of `P`. For
+bounded polyhedra, the projection of `v` to the affine span of `P` coincides
+with the vertex barycenter of `P`. The scalar z is the distance between the
+vertex barycenter and v, its default value is 1.
+
+One can use the optional arguments `no_coordinate = true` and `no_label = true`
+in order to suppress the computation of vertex coordinates and vertex labels.
+Using `no_coordinate = true`, one can also compute the group induced by the
+GROUP of `P`and leaving the apex fixed. All optional arguments are `false`
+by default.
 
 # Example
-Will be added.
+```jldoctest
+julia> c = cube(2,group=true)
+A polyhedron in ambient dimension 2
+
+julia> vertices_as_point_matrix(pyramid(c,5))
+pm::Matrix<pm::Rational>
+-1 -1 0
+1 -1 0
+-1 1 0
+1 1 0
+0 0 5
+
+```
 """
 function pyramid(P::Polyhedron, z::Number=1; no_coordinates::Bool=false, no_labels::Bool=false, group::Bool=false)
    pm_in = pm_polytope(P)
    pm_out = Polymake.polytope.pyramid(pm_in, z, no_coordinates=no_coordinates, no_labels=no_labels, group=group)
    return Polyhedron(pm_out)
 end
-
+#TODO For `group` option: Check if there is already a way to communicate the
+#Polymake groups with the Oscar groups.
 
 
 
@@ -27,9 +51,12 @@ Make a bipyramid over a pointed polyhedron. The bipyramid is the convex hull of
 the input polyhedron `P` and two points (`v`, `z`), (`v`, `z_prime`) on both sides of
 the affine span of `P`. For bounded polyhedra, the projections of the apexes `v`
 to the affine span of `P` coincide with the vertex barycenter of `P`. By default,
-`z_prime` is set to `-z` and `z` is set to `1`. Use the optional arguments
-`no_coordinate = true` and `no_label = true` in order to suppress the
-computation of vertex coordinates and vertex labels.
+`z_prime` is set to `-z` and `z` is set to `1`.
+
+One can use the optional arguments `no_coordinate = true` and `no_label = true`
+in order to suppress the computation of vertex coordinates and vertex labels.
+All optional arguments are `false` by default.
+
 
 # Example
 ```jldoctest
@@ -61,7 +88,7 @@ VERTICES_IN_FACETS
 	{0 3}
 	{1 3}
 
-julia> bipyramid(c,3,no_label=true,no_coordinate=true).pm_polytope
+julia> bipyramid(c,2,-3,no_label=true,no_coordinate=true).pm_polytope
 type: Polytope<Rational>
 description: Bipyramid over
 
@@ -186,7 +213,8 @@ julia> normalized_volume(C)
 """
 cube(d;group::Bool=false) = Polyhedron(Polymake.polytope.cube(d,group=group))
 cube(d, l, u) = Polyhedron(Polymake.polytope.cube(d, u, l))
-
+#TODO For `group` option: Check if there is already a way to communicate the
+#Polymake groups with the Oscar groups.
 
 
 """
