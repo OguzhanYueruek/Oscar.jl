@@ -3,6 +3,81 @@
 ### Standard constructions
 ###############################################################################
 ###############################################################################
+@doc Markdown.doc"""
+    bipyramid(P::Polyhedron, z::Number=1, z_prime::Number=-z [,no_coordinates::Bool, no_labels::Bool])
+
+Make a bipyramid over a pointed polyhedron. The bipyramid is the convex hull of
+the input polyhedron `P` and two points (`v`, `z`), (`v`, `z_prime`) on both sides of
+the affine span of `P`. For bounded polyhedra, the projections of the apexes `v`
+to the affine span of `P` coincide with the vertex barycenter of `P`. Use the optional
+arguments `no_coordinate = true` and `no_label = true` in order to suppress the
+computation of vertex coordinates and vertex labels.
+
+# Example
+```jldoctest
+julia> c = cube(1)
+A polyhedron in ambient dimension 1
+
+julia> bipyramid(c,3).pm_polytope
+type: Polytope<Rational>
+description: Bipyramid over
+
+CONE_AMBIENT_DIM
+	3
+
+N_VERTICES
+	4
+
+VERTEX_LABELS
+	0 1 Apex Apex'
+
+VERTICES
+  1  -1   0
+  1   1   0
+  1   0   3
+  1   0  -3
+
+VERTICES_IN_FACETS
+	{0 2}
+	{1 2}
+	{0 3}
+	{1 3}
+
+julia> bipyramid(c,3,no_label=true,no_coordinate=true).pm_polytope
+type: Polytope<Rational>
+description: Bipyramid over
+
+N_VERTICES
+	4
+
+VERTICES_IN_FACETS
+	{0 2}
+	{1 2}
+	{0 3}
+	{1 3}
+
+```
+"""
+function bipyramid(P::Polyhedron, z::Number, z_prime::Number; no_coordinate::Bool=false, no_label::Bool=false)
+   pm_in = pm_polytope(P)
+   if (!no_coordinate && !no_label)
+      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime)
+   elseif (no_coordinate && no_label)
+      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinate, no_labels=no_label)
+   elseif !no_coordinate
+      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_labels=no_label)
+   else
+      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinate)
+   end
+   return Polyhedron(pm_out)
+end
+function bipyramid(P::Polyhedron; no_coordinate::Bool=false, no_label::Bool=false)
+   return bipyramid(P::Polyhedron, 1, -1; no_coordinate, no_label)
+end
+function bipyramid(P::Polyhedron, z; no_coordinate::Bool=false, no_label::Bool=false)
+   return bipyramid(P::Polyhedron, z, -z; no_coordinate, no_label)
+end
+
 
 @doc Markdown.doc"""
     normal_cone(P::Polyhedron, i::Int64)
