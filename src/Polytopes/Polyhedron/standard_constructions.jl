@@ -58,24 +58,16 @@ VERTICES_IN_FACETS
 
 ```
 """
-function bipyramid(P::Polyhedron, z::Number, z_prime::Number; no_coordinate::Bool=false, no_label::Bool=false)
+function bipyramid(P::Polyhedron, z::Number, z_prime::Number; no_coordinates::Bool=false, no_labels::Bool=false)
    pm_in = pm_polytope(P)
-   if (!no_coordinate && !no_label)
-      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime)
-   elseif (no_coordinate && no_label)
-      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinate, no_labels=no_label)
-   elseif !no_coordinate
-      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_labels=no_label)
-   else
-      pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinate)
-   end
+   pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinates, no_labels=no_labels)
    return Polyhedron(pm_out)
 end
-function bipyramid(P::Polyhedron; no_coordinate::Bool=false, no_label::Bool=false)
-   return bipyramid(P::Polyhedron, 1, -1; no_coordinate, no_label)
+function bipyramid(P::Polyhedron; no_coordinates::Bool=false, no_labels::Bool=false)
+   return bipyramid(P::Polyhedron, 1, -1; no_coordinates, no_labels)
 end
-function bipyramid(P::Polyhedron, z; no_coordinate::Bool=false, no_label::Bool=false)
-   return bipyramid(P::Polyhedron, z, -z; no_coordinate, no_label)
+function bipyramid(P::Polyhedron, z; no_coordinates::Bool=false, no_labels::Bool=false)
+   return bipyramid(P::Polyhedron, z, -z; no_coordinates, no_labels)
 end
 
 
