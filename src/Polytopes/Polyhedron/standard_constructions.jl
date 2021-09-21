@@ -4,13 +4,31 @@
 ###############################################################################
 ###############################################################################
 @doc Markdown.doc"""
-    bipyramid(P::Polyhedron, z::Number=1, z_prime::Number=-z [,no_coordinates::Bool, no_labels::Bool])
+    pyramid(P::Polyhedron, z::Number=1; no_coordinates::Bool, no_labels::Bool, group::Bool)
+
+Will be added.
+
+# Example
+Will be added.
+"""
+function pyramid(P::Polyhedron, z::Number=1; no_coordinates::Bool=false, no_labels::Bool=false, group::Bool=false)
+   pm_in = pm_polytope(P)
+   pm_out = Polymake.polytope.pyramid(pm_in, z, no_coordinates=no_coordinates, no_labels=no_labels, group=group)
+   return Polyhedron(pm_out)
+end
+
+
+
+
+@doc Markdown.doc"""
+    bipyramid(P::Polyhedron, z::Number=1, z_prime::Number=-z; no_coordinates::Bool, no_labels::Bool)
 
 Make a bipyramid over a pointed polyhedron. The bipyramid is the convex hull of
 the input polyhedron `P` and two points (`v`, `z`), (`v`, `z_prime`) on both sides of
 the affine span of `P`. For bounded polyhedra, the projections of the apexes `v`
-to the affine span of `P` coincide with the vertex barycenter of `P`. Use the optional
-arguments `no_coordinate = true` and `no_label = true` in order to suppress the
+to the affine span of `P` coincide with the vertex barycenter of `P`. By default,
+`z_prime` is set to `-z` and `z` is set to `1`. Use the optional arguments
+`no_coordinate = true` and `no_label = true` in order to suppress the
 computation of vertex coordinates and vertex labels.
 
 # Example
@@ -58,16 +76,10 @@ VERTICES_IN_FACETS
 
 ```
 """
-function bipyramid(P::Polyhedron, z::Number, z_prime::Number; no_coordinates::Bool=false, no_labels::Bool=false)
+function bipyramid(P::Polyhedron, z::Number=1, z_prime::Number=-z; no_coordinates::Bool=false, no_labels::Bool=false)
    pm_in = pm_polytope(P)
    pm_out = Polymake.polytope.bipyramid(pm_in, z, z_prime, no_coordinates=no_coordinates, no_labels=no_labels)
    return Polyhedron(pm_out)
-end
-function bipyramid(P::Polyhedron; no_coordinates::Bool=false, no_labels::Bool=false)
-   return bipyramid(P::Polyhedron, 1, -1; no_coordinates, no_labels)
-end
-function bipyramid(P::Polyhedron, z; no_coordinates::Bool=false, no_labels::Bool=false)
-   return bipyramid(P::Polyhedron, z, -z; no_coordinates, no_labels)
 end
 
 
@@ -172,7 +184,7 @@ julia> normalized_volume(C)
 120
 ```
 """
-cube(d) = Polyhedron(Polymake.polytope.cube(d))
+cube(d;group::Bool=false) = Polyhedron(Polymake.polytope.cube(d,group=group))
 cube(d, l, u) = Polyhedron(Polymake.polytope.cube(d, u, l))
 
 
