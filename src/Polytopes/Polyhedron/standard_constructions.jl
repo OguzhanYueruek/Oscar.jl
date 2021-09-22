@@ -3,9 +3,45 @@
 ### Standard constructions
 ###############################################################################
 ###############################################################################
+@doc Markdown.doc"""
+    birkhoff(n::Integer; even::Bool=1, group::Bool)
+
+Constructs the Birkhoff polytope of dimension $n^2$. It is the polytope of
+$n \times n$ stochastic matrices (encoded as $n^2$ row vectors), i.e., the
+matrices with non-negative real entries whose row and column entries sum up to
+one. Its vertices are the permutation matrices.
+
+
+One can use the optional argument `no_coordinate = true` to get vertices only
+for even permutation matrices. Via the optional argument, `group = true`, one
+can also compute the symmetry group induced by the symmetric group to the
+resulting polytope. All optional arguments are `false` by default.
+
+# Example
+```jldoctest
+julia> b = birkhoff(3)
+A polyhedron in ambient dimension 9
+
+julia> vertices_as_point_matrix(b)
+pm::Matrix<pm::Rational>
+1 0 0 0 1 0 0 0 1
+0 1 0 1 0 0 0 0 1
+0 0 1 1 0 0 0 1 0
+1 0 0 0 0 1 0 1 0
+0 1 0 0 0 1 1 0 0
+0 0 1 0 1 0 1 0 0
+
+```
+"""
+function birkhoff(n::Integer; even::Bool=false, group::Bool=false)
+   pm_out = Polymake.polytope.birkhoff(n, even=even, group=group)
+   return Polyhedron(pm_out)
+end
+
+
 
 @doc Markdown.doc"""
-    pyramid(P::Polyhedron; z::Number=1, no_coordinates::Bool, no_labels::Bool, group::Bool)
+    pyramid(P::Polyhedron, z::Number=1; no_coordinates::Bool, no_labels::Bool, group::Bool)
 
 Make a pyramid over the given polyhedron `P`. The pyramid is the convex hull of
 the input polyhedron `P` and a point `v` outside the affine span of `P`. For
@@ -15,7 +51,7 @@ vertex barycenter and v, its default value is 1.
 
 One can use the optional arguments `no_coordinate = true` and `no_label = true`
 in order to suppress the computation of vertex coordinates and vertex labels.
-Using `no_coordinate = true`, one can also compute the group induced by the
+Using `group = true`, one can also compute the group induced by the
 GROUP of `P`and leaving the apex fixed. All optional arguments are `false`
 by default.
 
@@ -48,10 +84,10 @@ end
     bipyramid(P::Polyhedron, z::Number=1, z_prime::Number=-z; no_coordinates::Bool, no_labels::Bool)
 
 Make a bipyramid over a pointed polyhedron. The bipyramid is the convex hull of
-the input polyhedron `P` and two points (`v`, `z`), (`v`, `z_prime`) on both sides of
-the affine span of `P`. For bounded polyhedra, the projections of the apexes `v`
-to the affine span of `P` coincide with the vertex barycenter of `P`. By default,
-`z_prime` is set to `-z` and `z` is set to `1`.
+the input polyhedron `P` and two points (`v`, `z`), (`v`, `z_prime`) on both
+sides of the affine span of `P`. For bounded polyhedra, the projections of the
+apexes `v` to the affine span of `P` coincide with the vertex barycenter of `P`.
+By default,`z_prime` is set to `-z` and `z` is set to `1`.
 
 One can use the optional arguments `no_coordinate = true` and `no_label = true`
 in order to suppress the computation of vertex coordinates and vertex labels.
