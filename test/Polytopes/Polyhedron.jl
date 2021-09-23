@@ -61,8 +61,13 @@
             C = catalan_solid("triakis_tetrahedron")
             @test count(F -> nvertices(F) == 3, faces(C, 2)) == 12
         end
+        pA = pyramid(A)
+        bpA = bipyramid(A)
+        @test nvertices(pA) + 1 == nvertices(bpA)
         nc = normal_cone(square, 1)
         @test rays_as_point_matrix(nc) == [1 0; 0 1]
+        b = birkhoff(3)
+        @test nvertices(b) == 6
     end
 
 end
